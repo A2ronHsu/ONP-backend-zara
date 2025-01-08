@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var express = require('express');
+var dotenv = require('dotenv');
+var routes_1 = require("../src/routes");
+dotenv.config();
+var server = express();
+server.use(routes_1.default);
+server.listen(process.env.PORT);
+console.log('oi');
