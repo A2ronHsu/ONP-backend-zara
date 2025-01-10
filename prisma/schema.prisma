@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model CustomerCategory {
+  id                 String            @id @default(uuid())
+  name               String
+  created_at         DateTime?         @default(now())
+  updated_at         DateTime?         @updatedAt
+  product_categories ProductCategory[]
+
+  @@map("customer_category")
+}
+
+model ProductCategory {
+  id                   String           @id @default(uuid())
+  customer_category_id String
+  name                 String
+  created_at           DateTime?        @default(now())
+  updated_at           DateTime?        @updatedAt
+  customer_category    CustomerCategory @relation(fields: [customer_category_id], references: [id])
+  products             Products[]
+
+  @@map("product_category")
+}
+
+model Products {
+  id                    String          @id @default(uuid())
+  product_category_id   String
+  home                  Boolean
+  larger_home_image_url String?
+  small_home_image_url  String?
+  created_at            DateTime?       @default(now())
+  updated_at            DateTime?       @updatedAt
+  product_images        ProductImages[]
+  product_sizes         ProductSizes[]
+  product_category      ProductCategory @relation(fields: [product_category_id], references: [id])
+
+  @@map("products")
+}
+
+model ProductImages {
+  id         String    @id @default(uuid())
+  product_id String
+  url        String
+  created_at DateTime? @default(now())
+  updated_at DateTime? @updatedAt
+  product    Products  @relation(fields: [product_id], references: [id])
+
+  @@map("product_images")
+}
+
+model Sizes {
+  id            String         @id @default(uuid())
+  name          String
+  created_at    DateTime?      @default(now())
+  updated_at    DateTime?      @updatedAt
+  product_sizes ProductSizes[]
+
+  @@map("sizes")
+}
+
+model ProductSizes {
+  id                          String    @id @default(uuid())
+  product_id                  String
+  size_id                     String
+  description                 String
+  width                       Float
+  height                      Float
+  weight                      Float
+  length                      Float
+  price                       Float
+  height_of_model_description String
+  quantity                    Int
+  created_at                  DateTime? @default(now())
+  updated_at                  DateTime? @updatedAt
+  product                     Products  @relation(fields: [product_id], references: [id])
+  size                        Sizes     @relation(fields: [size_id], references: [id])
+
+  @@map("product_sizes")
+}
