@@ -2,15 +2,14 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-
+//usando a função queryRawUnsafe para poder buscar na tabela, a propriedade:valor a ser testada
 const fetchAndValidades = async (tableName: string , tableProperty: string, record: string ): Promise<boolean> => {
    let result : any = (await prisma.$queryRawUnsafe(`SELECT * FROM ${tableName} t WHERE t.${tableProperty} = '${record}'`));
    return result.length ? true : false ;
 };
 
-
-
 const seedCustomerCategory = async ()=>{
+   //dados de teste
    const json = [
       { name: 'Men' },
       { name: 'Women' },
@@ -21,9 +20,12 @@ const seedCustomerCategory = async ()=>{
       { name: 'newRecord3'},
       { name: 'newRecord4'}
    ]
-   
+   //loop para criar os registros
    for (const element of json) {
+      //testando se element é um registro duplicado
       const isDuplicated = await fetchAndValidades('customer_category', 'name', element.name);
+      
+      //se o valor for duplicado, log, caso constrario, criar registro e log.
       if (isDuplicated) {
          console.log(`${element.name} é duplicado`)
       }else {
