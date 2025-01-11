@@ -50,7 +50,7 @@ const seedCustomerCategory = async ()=>{
 
 async function main(){
    await seedCustomerCategory();
-   // console.log(await fetchAndValidades('customer_category', 'name', '---'));
+   // console.log(await fetchAndValidadegit config pull.rebase falses('customer_category', 'name', '---'));
 }
 
 main()
