@@ -3,15 +3,14 @@ class CustomerCategoriesService {
 
     async getAll() {
         return await prisma.customerCategory.findMany({
+            // include: {
+            //     product_categories: true
+            // }
         });
     };
 
-    async findFirst(record: string){
-        return await prisma.customerCategory.findFirst({
-            where: { 
-                name: record
-            }
-        })
+    async count(){
+        return await prisma.customerCategory.count()
     }
     
 

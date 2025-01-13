@@ -6,6 +6,10 @@ class ProductCategoriesService {
         });
     }
 
+    async count() {
+        return await prisma.productCategory.count();
+    }
+
 }
 
 export default ProductCategoriesService;

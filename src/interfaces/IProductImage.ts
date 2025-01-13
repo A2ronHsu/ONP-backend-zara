@@ -1,5 +1,5 @@
 export default interface IProductImage {
-  id: string;
+  id?: string;
   product_id: string;
   url: string;
 }

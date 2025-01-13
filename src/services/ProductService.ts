@@ -3,8 +3,11 @@ class ProductService {
 
     async getAll() {
         return await prisma.products.findMany({
-            include: { product_category: true }, 
         });
+    }
+
+    async count(){
+        return await prisma.products.count();
     }
 
 }
