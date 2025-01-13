@@ -19,11 +19,11 @@ model CustomerCategory {
 
 model ProductCategory {
   id                   String           @id @default(uuid())
-  customer_category_id String
   name                 String
   created_at           DateTime?        @default(now())
   updated_at           DateTime?        @updatedAt
   customer_category    CustomerCategory @relation(fields: [customer_category_id], references: [id])
+  customer_category_id String
   products             Products[]
 
   @@map("product_category")

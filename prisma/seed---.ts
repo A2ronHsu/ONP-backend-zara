@@ -25,15 +25,24 @@ const seedCustomerCategory = async (prismaTransaction:Prisma.TransactionClient)=
       { name: 'newRecord4'}
    ]
 
-   console.log(allData, allData.length);
 
-   if (!allData.length) {
-      await prismaTransaction.customerCategory.createMany({
-         data: seedData
+   //loop para criar os registros
+   for (const seed of seedData) {
+      //testando se seed é um registro duplicado
+      const isDuplicated = allData.filter( field => field.name == seed.name).length;
+      
+      //se o valor for duplicado, log, caso constrario, criar registro e log.
+      if (isDuplicated) {
+         console.log(`${seed.name} é duplicado`)
+      }else {
+         const user = await prismaTransaction.customerCategory.create({
+            data: {
+               name: seed.name
+            }
+         });
+         console.log(`${seed.name} criado`)
+      
       }
-      )
-   }else{
-      throw new Error('Tabela customerCategory não está vazio')
    }
 };
 
@@ -41,26 +50,43 @@ const seedProductCategory = async (prismaTransaction:Prisma.TransactionClient)=>
    const customerCategory = await customerCategoryFactory.getAll();
    const productCategory = await productCategoryFactory.getAll();
 
-   if (!productCategory.length){
-      await prismaTransaction.productCategory.createMany({
-         data: [
-            { name: 'T-Shirt', customer_category_id: customerCategory.find(c => c.name == 'Men')?.id},
-            { name: 'Dress', customer_category_id: customerCategory.find(c => c.name == 'Men')?.id},
-            { name: 'Blazer', customer_category_id: customerCategory.find(c => c.name == 'Men')?.id },
-            // { name: 'Shirts/Sweaters'},
-            // { name: 'Jackets/Coats'},
-            // { name: 'Coat/Jacket'},
-            // { name: 'Jeans/Trouser'},
-            // { name: 'Waistcoat'},
-            // { name: 'Footwear'},
-            // { name: 'teste'}
-         ]
-         
-      })
-   }else{
-      throw new Error('Tabela ProductCategory não está vazia')
+   const productCategoryData = [
+      { name: 'T-Shirt', customerCategory: 'Men'},
+      { name: 'Dress',customerCategory: 'Women'},
+      { name: 'Blazer', customerCategory: 'Women'},
+      { name: 'Shirts/Sweaters',customerCategory: 'Women'},
+      { name: 'Jackets/Coats',customerCategory: 'Women'},
+      { name: 'Coat/Jacket',customerCategory: 'Women'},
+      { name: 'Jeans/Trouser',customerCategory: 'Women'},
+      { name: 'Waistcoat',customerCategory: 'Women'},
+      { name: 'Footwear',customerCategory: 'Women'},
+      { name: 'teste',customerCategory: 'Men'}
+   ];
+
+
+   for (let element of productCategoryData){
+      const isDuplicated = productCategory.filter(field=> field.name === element.name).length;
+      
+      const record = await prisma.customerCategory.findMany({
+         where: {
+            name: element.name
+         }
+      });
+ 
+      const customerCategoryID : string = record[0].id;
+ 
+
+      if(!isDuplicated){
+         await prismaTransaction.productCategory.create({
+            data: {
+               name: element.name,
+               customer_category_id:  customerCategoryID
+            }
+         })
+
+      }
    }
-   
+
 };
 
 {
